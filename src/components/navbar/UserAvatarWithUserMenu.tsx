@@ -7,15 +7,20 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { initFirebase } from "@/firebase/app";
-import { getAuth } from "firebase/auth";
+import { User, getAuth } from "firebase/auth";
 import { useSignOut } from "react-firebase-hooks/auth";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
+import NextLink from "next/link";
 
-const UserAvatarWithMenu = () => {
+type UserAvatarWithMenuType = {
+  user: User;
+};
+
+const UserAvatarWithMenu: React.FC<UserAvatarWithMenuType> = ({ user }) => {
   const router = useRouter();
 
   initFirebase();
@@ -23,6 +28,13 @@ const UserAvatarWithMenu = () => {
   const [signOut, signOutLoading, error] = useSignOut(auth);
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+
+  const [role, setRole] = useState<string>("user");
+
+  const getRole = async () => {
+    const userRole = (await user.getIdTokenResult()).claims.role as string;
+    setRole(userRole);
+  };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -41,6 +53,10 @@ const UserAvatarWithMenu = () => {
     signOut();
     closeUserMenu();
   };
+
+  useEffect(() => {
+    if (user) getRole();
+  }, [user]);
 
   return (
     <>
@@ -70,8 +86,20 @@ const UserAvatarWithMenu = () => {
         <MenuItem key="Profile" onClick={handleClickProfile}>
           <Typography textAlign="center">Profile</Typography>
         </MenuItem>
-        <MenuItem key="Profile" onClick={handleSignOut}>
-          <Typography textAlign="center" color="error" fontWeight="bold" marginRight={1.3}>
+        {role === "employee" ? (
+          <MenuItem key="Dashboard" component={NextLink} href="/dashboard">
+            <Typography textAlign="center">Dashboard</Typography>
+          </MenuItem>
+        ) : (
+          ""
+        )}
+        <MenuItem key="SignOut" onClick={handleSignOut}>
+          <Typography
+            textAlign="center"
+            color="error"
+            fontWeight="bold"
+            marginRight={1.3}
+          >
             Logout
           </Typography>
           <LogoutIcon color="error" />

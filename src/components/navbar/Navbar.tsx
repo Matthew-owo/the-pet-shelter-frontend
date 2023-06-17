@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   AppBar,
@@ -17,7 +17,11 @@ import {
 } from "@mui/material";
 import { initFirebase } from "@/firebase/app";
 import { getAuth } from "firebase/auth";
-import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
+import {
+  useAuthState,
+  useIdToken,
+  useSignOut,
+} from "react-firebase-hooks/auth";
 import { useRouter } from "next/navigation";
 import UserAvatarWithMenu from "./UserAvatarWithUserMenu";
 import LoginRegisterButton from "./LoginRegisterButton";
@@ -50,7 +54,7 @@ const Navbar = () => {
               <CircularProgress color="secondary" />
             ) : user ? (
               // If user's data exist
-              <UserAvatarWithMenu />
+              <UserAvatarWithMenu user={user} />
             ) : (
               // If user's data not exist
               <LoginRegisterButton />
