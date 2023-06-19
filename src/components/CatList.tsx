@@ -4,8 +4,16 @@ import { useEffect, useState } from "react";
 import CatCard from "./CatCard";
 import { Grid } from "@mui/material";
 import CatLoadingCard from "./CatLoadingCard";
+import { initFirebase } from "@/firebase/app";
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import UserFavorite from "@/types/UserFavorite";
 
 const CatList: React.FC = () => {
+  initFirebase();
+  const auth = getAuth();
+  const [user, loadingCheckAuthExist] = useAuthState(auth);
+
   const [cats, setCats] = useState<Cat[]>([]);
   const [loading, setLoading] = useState(true);
 

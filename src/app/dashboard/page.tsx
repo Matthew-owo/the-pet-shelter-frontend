@@ -1,4 +1,5 @@
 "use client";
+import CatDataGrid from "@/components/CatDataGrid";
 import CreateCatForm from "@/components/forms/CreateCatForm";
 import { initFirebase } from "@/firebase/app";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -48,7 +49,7 @@ const Dashboard = () => {
               <Tab label="..." value="3" />
             </TabList>
           </Box>
-          <TabPanel value="1">Cat List</TabPanel>
+          <TabPanel value="1"><CatDataGrid /></TabPanel>
           <TabPanel value="2">
             <CreateCatForm />
           </TabPanel>

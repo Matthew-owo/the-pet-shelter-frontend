@@ -1,4 +1,5 @@
 "use client";
+import { initFirebase } from "@/firebase/app";
 import {
   Card,
   CardMedia,
@@ -7,6 +8,8 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { getAuth } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 type CatCardType = {
   id: string;
@@ -17,6 +20,36 @@ type CatCardType = {
 };
 
 const CatCard: React.FC<CatCardType> = ({ id, name, age, breed, image }) => {
+  initFirebase();
+  const auth = getAuth();
+  const [user, loading] = useAuthState(auth);
+
+  const handleAddFavorite = async () => {
+    const userId = user?.uid;
+    const catId = id;
+
+    const idToken = await user?.getIdToken();
+
+    const response = await fetch(
+      "http://localhost:10888/api/v1/users/addFavorite",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ userId, catId }),
+      }
+    );
+
+    if (response.ok) {
+      console.log("OK");
+    } else {
+      const res = await response.json();
+      console.log(res.message);
+    }
+  };
+
   return (
     <Card sx={{ maxWidth: 345, width: 345 }}>
       <CardMedia
@@ -40,8 +73,9 @@ const CatCard: React.FC<CatCardType> = ({ id, name, age, breed, image }) => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+        <Button size="small" onClick={handleAddFavorite}>
+          Add Favorite
+        </Button>
       </CardActions>
     </Card>
   );

@@ -43,9 +43,9 @@ const Navbar = () => {
           <CompanyLogo />
           {/* Menu Item */}
           <Box sx={{ flexGrow: 1, display: "flex" }}>
-            <NavigationItem key="item1" name="Item 1" href="/" />
+            {/* <NavigationItem key="item1" name="Item 1" href="/" />
             <NavigationItem key="item2" name="Item 2" href="/" />
-            <NavigationItem key="item3" name="Item 3" href="/" />
+            <NavigationItem key="item3" name="Item 3" href="/" /> */}
           </Box>
           {/* User Avatar with Menu / Login & Register */}
           <Box sx={{ flexGrow: 0 }}>
